@@ -147,7 +147,7 @@ MEDIA_ROOT = (
 
 
 CORS_ORIGIN_WHITELIST = os.getenv(
-    'CORS_ORIGIN_WHITELIST','https://localhost:8080'
+    'CORS_ORIGIN_WHITELIST', 'https://localhost:8080'
 ).split(',')
 
 CORS_ORIGIN_ALLOW_ALL = True
