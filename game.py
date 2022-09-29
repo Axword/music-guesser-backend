@@ -1,12 +1,12 @@
 from spotify import Spotify
 import webbrowser
 
+
 class Player:
-    points = 0
-    gues = None
 
     def __init__(self, name: str) -> None:
         self.name = name
+        self.points = 0
 
     def take_a_guess(self):
         return input('')
@@ -20,16 +20,16 @@ possible_states = ('Open', 'Closed', 'In progress', 'Finished')
 
 
 class Room:
-    preview_url = ''
-    state = 'Open'
-    players = {}
-    settings = {}
-    choices = {}
-    rounds = []
 
     def __init__(self, player: Player) -> None:
         self.host = player
         self.code = 'xyz'
+        self.preview_url = ''
+        self.state = 'Open'
+        self.players = [player]
+        self.choices = {}
+        self.rounds = []
+        self.settings = {}
 
     def change_settings(self, settings):
         self.settings = settings
@@ -62,13 +62,20 @@ class Room:
             print(f'choices: {choices}')
             webbrowser.open(winning_song['preview'])
             guess = self.host.take_a_guess()
-            print("Won") if guess.lower() == winning_song['name'].lower() else print("Lost")
+            print("Won") if guess.lower(
+            ) == winning_song['name'].lower() else print("Lost")
 
     def end_round(self):
         round = self.rounds[0]
         # delete el from list
         for player in self.player.values():
             player.check_round(round)
+
+    def add_player(self, player):
+        self.players[player.name] = player
+
+    def reprJSON(self):
+        return dict(id=self.identity, data=self.data)
 
 
 class Round:
