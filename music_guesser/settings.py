@@ -149,3 +149,6 @@ CORS_ORIGIN_WHITELIST = os.getenv(
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
+
+STATIC_URL = os.getenv('STATIC_URL', '/static/')
+STATIC_ROOT = os.getenv('STATIC_ROOT', 'static')
