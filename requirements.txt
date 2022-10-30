@@ -9,5 +9,5 @@ pytest-django==4.5.2
 spotipy
 daphne==3.0.2
 channels==4.0.0
-
+gunicorn==20.1.0
 redis==4.3.3
