@@ -3,8 +3,7 @@ from rest_framework.response import Response
 from spotify import SpotifyException
 from game import Player, Room
 # TODO import redis and use it for temp Rooms
-from channels.generic.websocket import AsyncWebsocketConsumer
-import json
+
 
 rooms = {}
 
@@ -72,6 +71,7 @@ def start_game(request):
         return Response({'error': str(error)}, status=400)
     return Response({'choices': room.choices, 'preview_url': room.preview_url}, status=200)
 
+
 @api_view(['POST'])
 def start_round(request):
     room = rooms[request.data['code']]
@@ -81,6 +81,7 @@ def start_round(request):
         return Response({'error': 'Koniec gry'}, status=400)
     room.start_a_round()
     return Response({'choices': room.choices, 'preview_url': room.preview_url}, status=200)
+
 
 @api_view(['POST'])
 def check_answer(request):

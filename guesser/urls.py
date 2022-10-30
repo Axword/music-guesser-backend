@@ -1,4 +1,4 @@
-from django.urls import path, re_path
+from django.urls import path
 
 from guesser.views import login, get_rounds, get_room_data, start_game, check_answer, start_round
 

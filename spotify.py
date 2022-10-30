@@ -25,7 +25,8 @@ class Spotify:
         else:
             self.add_songs_to_tracklist(results['items'])
         if len(self.tracklist) < number_of_rounds:
-            raise SpotifyException("Playlista jest za krótka. Sprawdź, które piosenki mają opcję preview, lub zmniejsz liczbę rund")
+            raise SpotifyException("""Playlista jest za krótka. Sprawdź, które
+             piosenki mają opcję preview, lub zmniejsz liczbę rund""")
 
     def add_songs_to_tracklist(self, items):
         for track_id, track in enumerate(items):
