@@ -3,5 +3,11 @@ django-cors-headers==3.12.0
 django-filter==2.4.0
 djangorestframework==3.13.1
 djangorestframework-simplejwt==5.1.0
-pytest
+pytest==7.1.2
+pytest-cov==3.0.0
+pytest-django==4.5.2
 spotipy
+daphne==3.0.2
+channels==4.0.0
+
+redis==4.3.3

@@ -4,39 +4,51 @@ import random
 lz_uri = 'spotify:artist:36QJpDe2go2KgaRleHCDTp'
 
 
+class SpotifyException(Exception):
+    pass
+
+
 class Spotify:
-    def __init__(self):
+    def __init__(self, playlist_url, number_of_rounds=10, number_of_choices=4) -> None:
         spotify = spotipy.Spotify(
             client_credentials_manager=SpotifyClientCredentials())
-        results = spotify.playlist(
-            '4smVZcKHknjHYbLKN4F3oL?si=4f5d35f7b1a74904')
+        try:
+            results = spotify.playlist(playlist_url.split('/')[-1])
+        except Exception:
+            raise SpotifyException("Playlista nie znaleziona")
         results = results['tracks']
         self.tracklist = []
-        while results['next']:
-            for track_id, track in enumerate(results['items']):
-                if track['is_local']:
-                    continue
-                track = track['track']
-                url = track['preview_url']
-                if not url:
-                    continue
-                self.tracklist.append({
-                    'id': track_id,
-                    'name': track['name'],
-                    'preview': url,
-                })
-            results = spotify.next(results)
-        print(len(self.tracklist))
+        if results['total'] > 100:
+            while results['next']:
+                self.add_songs_to_tracklist(results['items'])
+                results = spotify.next(results)
+        else:
+            self.add_songs_to_tracklist(results['items'])
+        if len(self.tracklist) < number_of_rounds:
+            raise SpotifyException("Playlista jest za krótka. Sprawdź, które piosenki mają opcję preview, lub zmniejsz liczbę rund")
+
+    def add_songs_to_tracklist(self, items):
+        for track_id, track in enumerate(items):
+            if track['is_local']:
+                continue
+            track = track['track']
+            url = track['preview_url']
+            if not url:
+                continue
+            self.tracklist.append({
+                'id': track_id,
+                'name': track['name'],
+                'preview': url,
+            })
 
     def select_song_to_guess(self):
-        tracks = random.choices(self.tracklist, k=4)
-        self.tracklist = [
-            track for track in self.tracklist if track not in tracks]
+        tracks = random.sample(self.tracklist, k=4)
         return tracks
 
     def select_winning_tracks(self, tracklist):
         # x 4 z czego pierwszy z listy usuwany i poprawny
         track = random.choice(tracklist)
+        self.tracklist.remove(track)
         return track
 
     def game(tracklist, name):
