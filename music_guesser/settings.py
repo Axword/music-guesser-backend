@@ -153,3 +153,6 @@ CORS_ALLOW_CREDENTIALS = True
 STATIC_ROOT = os.getenv('STATIC_ROOT', 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.getenv('MEDIA_ROOT', 'media')
+
+REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
+REDIS_PORT = os.getenv('REDIS_PORT', 6379)

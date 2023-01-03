@@ -47,7 +47,6 @@ class Spotify:
         return tracks
 
     def select_winning_tracks(self, tracklist):
-        # x 4 z czego pierwszy z listy usuwany i poprawny
         track = random.choice(tracklist)
         self.tracklist.remove(track)
         return track
@@ -71,35 +70,3 @@ class Spotify:
 
     def generate_room_id():
         pass
-
-
-possible_room_status = ['settings', 'starting', 'started', 'ended']
-
-
-class Room:
-    players = []
-    status = None
-
-    # def __init__(self) -> None:
-    #     room_id = uuid3()
-    #     room_qr = ''
-
-    def connect_player(self, user):
-        self.players.append(user)
-        return self.players
-
-    def start_game(self):
-        self.status = 'starting'
-        return self.status
-
-    def play(self):
-        """
-        Zrobić tak -> user ma do wyboru n możliwości losowo wybranych i zwracanych co rundę.
-        Prawidłowa opdowiedź jest wyrzucana z puli możliwych odpowiezdzi. Liczymy czas odpowiedzi i czy jest poprawna
-        Sumujemy po każdej rundzie pokazując wyniki innych graczy i topliste
-        """
-
-    def function():
-        items = []
-        for item in items:
-            print(item)

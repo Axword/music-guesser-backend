@@ -7,11 +7,10 @@ possible_states = ('Open', 'Closed', 'In progress', 'Finished')
 
 class Player:
 
-    def __init__(self, name: str, user_id) -> None:
+    def __init__(self, name: str) -> None:
         self.name = name
         self.points = 0
-        self.round = 0
-        self.user_id = user_id
+        # self.user_id = user_id
         self.state = 'playing'
 
 
@@ -25,17 +24,14 @@ class Room:
         self.players = [player.__dict__]
         self.choices = {}
         self.rounds = []
-        self.number_of_rounds = '5'
-        self.playlist_url = ''
-        self.round_now = 0
-        self.time = 15
-
-    def change_settings(self, settings):
-        self.settings = settings
+        self.number_of_rounds = 5
+        self.playlist_url = 'https://open.spotify.com/playlist/6AYZjIV1kFmYYEi2YpxVwF?si=ab45b75b41014768'
+        self.round_now = 1
+        self.time = 10
 
     @staticmethod
     def get_random_string():
-        return 'g-'.join(random.choice(string.ascii_letters) for i in range(9))
+        return ''.join(random.choice(string.ascii_letters) for i in range(9))
 
     def start_game(self):
         self.state = 'In progress'
@@ -49,10 +45,9 @@ class Room:
         return True
 
     def generate_rounds(self):
-        # TODO tworzyć wiele klas naraz
         number_of_rounds = int(self.number_of_rounds)
         time = self.time
-        spotify = Spotify(self.playlist_url)
+        spotify = Spotify(self.playlist_url, number_of_rounds)
         for i in range(number_of_rounds):
             songs = spotify.select_song_to_guess()
             winning_song = spotify.select_winning_tracks(songs)
