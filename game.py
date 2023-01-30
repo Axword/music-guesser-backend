@@ -1,20 +1,24 @@
 from spotify import Spotify
 import random
 import string
-
+import json
 possible_states = ('Open', 'Closed', 'In progress', 'Finished')
 
+class JsonObject:
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__, 
+            sort_keys=True, indent=4)
 
-class Player:
+class Player(JsonObject):
 
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: str, user_id) -> None:
         self.name = name
         self.points = 0
-        # self.user_id = user_id
+        self.user_id = user_id
         self.state = 'playing'
 
 
-class Room:
+class Room(JsonObject):
 
     def __init__(self, player: Player) -> None:
         self.host = player.__dict__
@@ -22,10 +26,10 @@ class Room:
         self.preview_url = ''
         self.state = 'Open'
         self.players = [player.__dict__]
-        self.choices = {}
+        self.choices = []
         self.rounds = []
         self.number_of_rounds = 5
-        self.playlist_url = 'https://open.spotify.com/playlist/6AYZjIV1kFmYYEi2YpxVwF?si=ab45b75b41014768'
+        self.playlist_url = ''
         self.round_now = 1
         self.time = 10
 
@@ -80,7 +84,7 @@ class Room:
         return dict(id=self.identity, data=self.data)
 
 
-class Round:
+class Round(JsonObject):
     def __init__(self, time: int, songs, winning_song) -> None:
         self.songs = songs
         self.winning_song = winning_song
