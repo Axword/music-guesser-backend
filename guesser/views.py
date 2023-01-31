@@ -28,7 +28,7 @@ def init_dict():
     for key in redisClient.keys():
         room = get_room_from_redis(key).decode('utf-8')
         key = key.decode('utf-8')
-        rooms[key] = room
+        rooms[key] = json.loads(room)
 
 
 init_dict()
@@ -73,12 +73,16 @@ def get_room_data(request):
     code = request.GET.get('code')[:-1]
     room = rooms[code]
     player_data = room.host
-    data = room.__dict__
+    data = {}
     data['host'] = player_data
     players_obj_list = []
     for player in room.players:
         players_obj_list.append(player)
     data['players'] = players_obj_list
+    data['rounds'] = []
+    data['time'] = room.time
+    data['code'] = room.code
+    data['number_of_rounds'] = room.number_of_rounds
     return Response(data, status=200)
 
 

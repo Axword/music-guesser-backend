@@ -4,10 +4,12 @@ import string
 import json
 possible_states = ('Open', 'Closed', 'In progress', 'Finished')
 
+
 class JsonObject:
     def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__, 
-            sort_keys=True, indent=4)
+        return json.dumps(self, default=lambda o: o.__dict__,
+                          sort_keys=True, indent=4)
+
 
 class Player(JsonObject):
 
@@ -30,7 +32,7 @@ class Room(JsonObject):
         self.rounds = []
         self.number_of_rounds = 5
         self.playlist_url = ''
-        self.round_now = 1
+        self.round_now = 0
         self.time = 10
 
     @staticmethod
@@ -40,7 +42,12 @@ class Room(JsonObject):
     def start_game(self):
         self.state = 'In progress'
         self.generate_rounds()
+        self.reset_points()
         self.start_a_round()
+
+    def reset_points(self):
+        for player in self.players:
+            player['points'] = 0
 
     def check_if_all_players_answered(self):
         for player in self.players:
