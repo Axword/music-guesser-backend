@@ -46,24 +46,31 @@ def get_room_data(request):
     code = request.GET.get('code')[:-1]
     room = rooms[code]
     player_data = room.host
-    data = room.__dict__
+    data = {}
     data['host'] = player_data
     players_obj_list = []
     for player in room.players:
         players_obj_list.append(player)
     data['players'] = players_obj_list
+    data['rounds'] = []
+    data['time'] = room.time
+    data['code'] = room.code
+    data['number_of_rounds'] = room.number_of_rounds
     return Response(data, status=200)
 
 
 @api_view(['POST'])
 def start_game(request):
     data = request.data
-    room = rooms[data['code']]
+    try:
+        room = rooms[data['code']]
+    except Exception:
+        return Response({'error': 'Pokój z takim kodem nie został znaleziony'}, status=404)
     playlist = data['playlist_url']
     if not playlist:
         return Response({'error': 'Playlista jest wymagana'}, status=400)
     room.playlist_url = playlist
-    room.number_of_rounds = data.get("number_of_rounds")
+    room.number_of_rounds = int(data.get("number_of_rounds"))
     rooms[data['code']] = room
     try:
         room.start_game()
@@ -90,7 +97,7 @@ def check_answer(request):
     checking_answer_user_id = data['user_id']
     answer = data['choice']
     is_won = room.end_round(answer, checking_answer_user_id)
-    return Response({"is_won": is_won}, status=200)
+    return Response({"is_won": is_won, "answer": answer}, status=200)
 
 # class UserNotificationConsumer(AsyncWebsocketConsumer):  # pragma no cover
 #     async def connect(self):

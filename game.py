@@ -90,25 +90,3 @@ class Round:
         self.songs = songs
         self.winning_song = winning_song
         self.time = time
-
-
-class Page:
-    rooms = {}
-
-    def create_game(self, request):
-        room = Room(request.user)
-        self.rooms[room.code] = room
-        return room
-
-    def join_game(self, request):
-        try:
-            room = self.rooms[request.code]
-        except Exception:
-            return "Room not Found"
-        room.players[request.user.name] = request.user
-        return room
-
-
-if __name__ == '__main__':
-    player = Player("Michał")
-    Room(player).start_game()
