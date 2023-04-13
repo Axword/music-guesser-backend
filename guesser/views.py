@@ -3,9 +3,35 @@ from rest_framework.response import Response
 from spotify import SpotifyException
 from game import Player, Room
 # TODO import redis and use it for temp Rooms
+import redis
+import json
+from django.conf import settings
 
 
+redisClient = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
 rooms = {}
+
+
+def update_redis(room_code, room):
+    redisClient.set(str(room_code), room.toJSON())
+
+
+def delete_room_from_redis(room_code):
+    redisClient.delete(room_code)
+
+
+def get_room_from_redis(room_code):
+    return redisClient.get(room_code)
+
+
+def init_dict():
+    for key in redisClient.keys():
+        room = get_room_from_redis(key).decode('utf-8')
+        key = key.decode('utf-8')
+        rooms[key] = json.loads(room)
+
+
+init_dict()
 
 
 @api_view(['POST'])
@@ -29,6 +55,7 @@ def login(request):
             return Response({'error': 'Pokój z takim kodem nie został znaleziony'}, status=404)
         player = Player(name, user_id)
         room.add_player(player)
+    update_redis(room.code, room)
     data = room.__dict__
     data['code'] = room.code
     return Response(data, status=200)

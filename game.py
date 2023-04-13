@@ -1,21 +1,26 @@
 from spotify import Spotify
 import random
 import string
-
+import json
 possible_states = ('Open', 'Closed', 'In progress', 'Finished')
 
 
-class Player:
+class JsonObject:
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__,
+                          sort_keys=True, indent=4)
+
+
+class Player(JsonObject):
 
     def __init__(self, name: str, user_id) -> None:
         self.name = name
         self.points = 0
-        self.round = 0
         self.user_id = user_id
         self.state = 'playing'
 
 
-class Room:
+class Room(JsonObject):
 
     def __init__(self, player: Player) -> None:
         self.host = player.__dict__
@@ -23,24 +28,26 @@ class Room:
         self.preview_url = ''
         self.state = 'Open'
         self.players = [player.__dict__]
-        self.choices = {}
+        self.choices = []
         self.rounds = []
-        self.number_of_rounds = '5'
+        self.number_of_rounds = 5
         self.playlist_url = ''
         self.round_now = 0
-        self.time = 15
-
-    def change_settings(self, settings):
-        self.settings = settings
+        self.time = 10
 
     @staticmethod
     def get_random_string():
-        return 'g-'.join(random.choice(string.ascii_letters) for i in range(9))
+        return ''.join(random.choice(string.ascii_letters) for i in range(9))
 
     def start_game(self):
         self.state = 'In progress'
         self.generate_rounds()
+        self.reset_points()
         self.start_a_round()
+
+    def reset_points(self):
+        for player in self.players:
+            player['points'] = 0
 
     def check_if_all_players_answered(self):
         for player in self.players:
@@ -49,10 +56,9 @@ class Room:
         return True
 
     def generate_rounds(self):
-        # TODO tworzyć wiele klas naraz
         number_of_rounds = int(self.number_of_rounds)
         time = self.time
-        spotify = Spotify(self.playlist_url)
+        spotify = Spotify(self.playlist_url, number_of_rounds)
         for i in range(number_of_rounds):
             songs = spotify.select_song_to_guess()
             winning_song = spotify.select_winning_tracks(songs)
@@ -85,7 +91,7 @@ class Room:
         return dict(id=self.identity, data=self.data)
 
 
-class Round:
+class Round(JsonObject):
     def __init__(self, time: int, songs, winning_song) -> None:
         self.songs = songs
         self.winning_song = winning_song
