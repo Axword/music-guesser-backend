@@ -29,7 +29,9 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 
-# Application definition
+
+# Use channels layer as the default backend
+ASGI_APPLICATION = "music_guesser.asgi.application"
 
 INSTALLED_APPS = [
     'daphne',
@@ -43,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework',
     'django_filters',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -55,6 +58,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
 ]
+# Channels configuration
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+        },
+    },
+}
+
 
 ROOT_URLCONF = 'music_guesser.urls'
 
@@ -153,6 +166,5 @@ CORS_ALLOW_CREDENTIALS = True
 STATIC_ROOT = os.getenv('STATIC_ROOT', 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.getenv('MEDIA_ROOT', 'media')
-
 REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
 REDIS_PORT = os.getenv('REDIS_PORT', 6379)

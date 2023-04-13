@@ -10,10 +10,12 @@ class SpotifyException(Exception):
 
 class Spotify:
     def __init__(self, playlist_url, number_of_rounds=10, number_of_choices=4) -> None:
+        """Initialize Spotify class with playlist url and number of rounds to play"""
         spotify = spotipy.Spotify(
             client_credentials_manager=SpotifyClientCredentials())
         try:
-            results = spotify.playlist(playlist_url.split('/')[-1])
+            playlist_id = playlist_url.split('/')[-1]
+            results = spotify.playlist(playlist_id)
         except Exception:
             raise SpotifyException("Playlista nie znaleziona")
         results = results['tracks']
